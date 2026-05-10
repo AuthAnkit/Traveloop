@@ -6,7 +6,7 @@ import { formatDate } from '../../utils/dateUtils'
 import { statusColor, activityCategoryColor, formatCurrency } from '../../utils/formatters'
 import Badge from '../../components/ui/Badge'
 import Button from '../../components/ui/Button'
-import { MapPin, Clock, DollarSign, Pencil, Share2, Calendar, Star } from 'lucide-react'
+import { MapPin, Clock, IndianRupee, Pencil, Share2, Calendar, Star } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 export default function ItineraryViewPage() {
@@ -57,7 +57,7 @@ export default function ItineraryViewPage() {
           </div>
           {totalActivitiesCost > 0 && (
             <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-              <DollarSign size={15} /><span>{formatCurrency(totalActivitiesCost)} activities</span>
+              <IndianRupee size={15} /><span>{formatCurrency(totalActivitiesCost)} in activities</span>
             </div>
           )}
           <div className="ml-auto flex gap-2">
@@ -119,7 +119,7 @@ export default function ItineraryViewPage() {
                           </div>
                           <div className="flex items-center gap-3 mt-0.5 text-xs text-gray-400">
                             {sa.scheduledTime && <span className="flex items-center gap-1"><Clock size={11} />{sa.scheduledTime}</span>}
-                            {sa.activity.estimatedCost && <span className="flex items-center gap-1"><DollarSign size={11} />${sa.activity.estimatedCost}</span>}
+                            {sa.activity.estimatedCost && <span className="flex items-center gap-1"><IndianRupee size={11} />{sa.activity.estimatedCost.toLocaleString('en-IN')}</span>}
                             {sa.activity.durationHours && <span className="flex items-center gap-1">⏱ {sa.activity.durationHours}h</span>}
                             {sa.activity.rating && <span className="flex items-center gap-1"><Star size={11} />{sa.activity.rating}</span>}
                           </div>

@@ -7,7 +7,7 @@ import Button from '../../components/ui/Button'
 import Input from '../../components/ui/Input'
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts'
 import toast from 'react-hot-toast'
-import { Wallet, TrendingUp, ArrowLeft } from 'lucide-react'
+import { Wallet, TrendingUp, ArrowLeft, Users } from 'lucide-react'
 
 const COLORS = ['#3b82f6', '#14b8a6', '#f59e0b', '#8b5cf6', '#ef4444']
 const CATEGORIES = [
@@ -25,6 +25,7 @@ export default function BudgetPage() {
   const [form, setForm] = useState({ hotelCost: 0, transportCost: 0, foodCost: 0, activityCost: 0, miscCost: 0 })
   const [saving, setSaving] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [persons, setPersons] = useState(1)
 
   useEffect(() => {
     Promise.all([getTrip(id), getBudget(id)])
@@ -78,9 +79,9 @@ export default function BudgetPage() {
       {/* Summary cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[
-          { label: 'Total Budget', value: formatCurrency(totalCost), icon: Wallet, color: 'text-primary-600 dark:text-primary-400', bg: 'bg-primary-50 dark:bg-primary-900/30' },
-          { label: 'Daily Average', value: formatCurrency(budget?.dailyAverage ?? 0), icon: TrendingUp, color: 'text-teal-600 dark:text-teal-400', bg: 'bg-teal-50 dark:bg-teal-900/30' },
-          { label: 'Biggest Expense', value: CATEGORIES.reduce((a, b) => (form[a.key] ?? 0) > (form[b.key] ?? 0) ? a : b, CATEGORIES[0]).label, icon: Wallet, color: 'text-orange-600 dark:text-orange-400', bg: 'bg-orange-50 dark:bg-orange-900/30' },
+        { label: 'Total Budget',     value: formatCurrency(totalCost),                icon: Wallet,      color: 'text-primary-600 dark:text-primary-400', bg: 'bg-primary-50 dark:bg-primary-900/30' },
+          { label: 'Per Person',        value: formatCurrency(Math.round(totalCost / Math.max(persons, 1))), icon: Users, color: 'text-teal-600 dark:text-teal-400', bg: 'bg-teal-50 dark:bg-teal-900/30' },
+          { label: 'Biggest Expense',   value: CATEGORIES.reduce((a, b) => (form[a.key] ?? 0) > (form[b.key] ?? 0) ? a : b, CATEGORIES[0]).label, icon: Wallet, color: 'text-orange-600 dark:text-orange-400', bg: 'bg-orange-50 dark:bg-orange-900/30' },
         ].map(({ label, value, icon: Icon, color, bg }) => (
           <div key={label} className="card p-5 flex items-center gap-4">
             <div className={`w-11 h-11 ${bg} rounded-xl flex items-center justify-center flex-shrink-0`}>
@@ -97,7 +98,15 @@ export default function BudgetPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Input form */}
         <div className="card p-6 space-y-4">
-          <h3 className="font-semibold text-gray-900 dark:text-white">Edit Budget</h3>
+          <h3 className="font-semibold text-gray-900 dark:text-white flex items-center justify-between">
+            Edit Budget
+            <div className="flex items-center gap-2">
+              <Users size={14} className="text-gray-400" />
+              <span className="text-xs text-gray-400">Persons:</span>
+              <input type="number" min="1" max="20" value={persons} onChange={(e) => setPersons(Math.max(1, parseInt(e.target.value) || 1))}
+                className="w-14 text-sm text-center input py-1 px-2" />
+            </div>
+          </h3>
           {CATEGORIES.map(({ key, label, emoji }) => (
             <div key={key} className="flex items-center gap-3">
               <span className="text-xl w-7">{emoji}</span>

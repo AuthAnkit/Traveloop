@@ -6,7 +6,7 @@ import Input, { Textarea, Select } from '../../components/ui/Input'
 import toast from 'react-hot-toast'
 import { Map } from 'lucide-react'
 
-const coverEmojis = ['✈️','🌍','🗺️','🏔️','🌊','🌴','🗼','🏛️','🌸','🌅','🏕️','🚢']
+const coverEmojis = ['✈️','🇮🇳','🏔️','🌊','🌴','🛕','🏰','🌅','🧘','🏕️','🌸','🐯','🦚','🎭','🌺','🚂','⛩️','🗺️','🌆','🏜️']
 
 export default function CreateTripPage() {
   const { id } = useParams()
@@ -66,7 +66,7 @@ export default function CreateTripPage() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          <Input label="Trip Title *" placeholder="e.g. Europe Summer 2025" value={form.title} onChange={set('title')} />
+          <Input label="Trip Title *" placeholder="e.g. Rajasthan Heritage Tour 2025" value={form.title} onChange={set('title')} />
 
           <Textarea label="Description" placeholder="What's this trip about?" value={form.description} onChange={set('description')} rows={3} />
 

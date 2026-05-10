@@ -12,9 +12,9 @@ import Modal from '../../components/ui/Modal'
 import Input, { Select } from '../../components/ui/Input'
 import Badge from '../../components/ui/Badge'
 import { formatDate } from '../../utils/dateUtils'
-import { activityCategoryColor } from '../../utils/formatters'
+import { activityCategoryColor, formatCurrency } from '../../utils/formatters'
 import toast from 'react-hot-toast'
-import { GripVertical, Plus, Trash2, MapPin, Clock, DollarSign, Share2, Eye, X } from 'lucide-react'
+import { GripVertical, Plus, Trash2, MapPin, Clock, IndianRupee, Share2, Eye, X, Search, CheckCircle2 } from 'lucide-react'
 
 function SortableStop({ stop, onDelete, onAddActivity, onRemoveActivity }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: stop.id })
@@ -61,7 +61,7 @@ function SortableStop({ stop, onDelete, onAddActivity, onRemoveActivity }) {
                 </div>
                 <div className="flex items-center gap-3 mt-0.5 text-xs text-gray-400">
                   {sa.scheduledTime && <span className="flex items-center gap-1"><Clock size={11} />{sa.scheduledTime}</span>}
-                  {sa.activity.estimatedCost && <span className="flex items-center gap-1"><DollarSign size={11} />${sa.activity.estimatedCost}</span>}
+                  {sa.activity.estimatedCost && <span className="flex items-center gap-1"><IndianRupee size={11} />{sa.activity.estimatedCost.toLocaleString('en-IN')}</span>}
                 </div>
               </div>
               <button onClick={() => onRemoveActivity(sa.id)}
@@ -73,6 +73,35 @@ function SortableStop({ stop, onDelete, onAddActivity, onRemoveActivity }) {
         </div>
       )}
     </div>
+  )
+}
+
+// ── City Search Card ─────────────────────────────────────────────────────────
+function CitySearchCard({ city, selected, onSelect }) {
+  const isSelected = selected?.id === city.id
+  return (
+    <button
+      type="button"
+      onClick={() => onSelect(city)}
+      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl border-2 text-left transition-all duration-200 ${
+        isSelected
+          ? 'border-orange-400 bg-orange-50 dark:bg-orange-900/20 shadow-md scale-[1.01]'
+          : 'border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600 hover:bg-gray-50 dark:hover:bg-gray-800'
+      }`}
+    >
+      <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0 ${
+        isSelected ? 'bg-orange-100 dark:bg-orange-900/40' : 'bg-primary-50 dark:bg-primary-900/20'
+      }`}>
+        {city.countryCode === 'IN' ? '🇮🇳' : '🌍'}
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className={`font-semibold text-sm truncate ${isSelected ? 'text-orange-700 dark:text-orange-400' : 'text-gray-900 dark:text-white'}`}>
+          {city.name}
+        </p>
+        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{city.country}</p>
+      </div>
+      {isSelected && <CheckCircle2 size={18} className="text-orange-500 flex-shrink-0" />}
+    </button>
   )
 }
 
@@ -88,28 +117,35 @@ export default function ItineraryBuilderPage() {
 
   const [cities, setCities] = useState([])
   const [citySearch, setCitySearch] = useState('')
+  const [selectedCity, setSelectedCity] = useState(null)   // NEW: city object, not just ID
   const [activities, setActivities] = useState([])
-  const [stopForm, setStopForm] = useState({ cityId: '', arrivalDate: '', departureDate: '' })
+  const [stopForm, setStopForm] = useState({ arrivalDate: '', departureDate: '' })
   const [activityForm, setActivityForm] = useState({ activityId: '', scheduledTime: '' })
+  const [searching, setSearching] = useState(false)
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }))
 
-  useEffect(() => {
-    loadTrip()
-  }, [id])
+  useEffect(() => { loadTrip() }, [id])
 
+  // Debounced city search
   useEffect(() => {
-    if (!citySearch) return
-    const t = setTimeout(() => {
-      getCities(citySearch).then((r) => setCities(r.data)).catch(() => {})
+    if (!citySearch.trim()) { setCities([]); return }
+    const t = setTimeout(async () => {
+      setSearching(true)
+      try {
+        const r = await getCities(citySearch)
+        setCities(r.data)
+      } catch { /* silent */ }
+      finally { setSearching(false) }
     }, 300)
     return () => clearTimeout(t)
   }, [citySearch])
 
+  // Load activities when a city is selected
   useEffect(() => {
-    if (!stopForm.cityId) return
-    getCityActivities(stopForm.cityId).then((r) => setActivities(r.data)).catch(() => {})
-  }, [stopForm.cityId])
+    if (!selectedCity?.id) { setActivities([]); return }
+    getCityActivities(selectedCity.id).then((r) => setActivities(r.data)).catch(() => {})
+  }, [selectedCity])
 
   const loadTrip = () => {
     setLoading(true)
@@ -134,19 +170,21 @@ export default function ItineraryBuilderPage() {
   }
 
   const handleAddStop = async () => {
-    if (!stopForm.cityId) { toast.error('Select a city'); return }
+    if (!selectedCity) { toast.error('Please select a city first'); return }
     try {
       const { data } = await addStop(id, {
-        cityId: Number(stopForm.cityId),
+        cityId: Number(selectedCity.id),
         arrivalDate: stopForm.arrivalDate || null,
         departureDate: stopForm.departureDate || null,
       })
       setStops([...stops, { ...data, activities: [] }])
       setShowAddStop(false)
-      setStopForm({ cityId: '', arrivalDate: '', departureDate: '' })
+      setStopForm({ arrivalDate: '', departureDate: '' })
       setCitySearch('')
-      toast.success('City added!')
-    } catch { toast.error('Failed to add stop') }
+      setCities([])
+      setSelectedCity(null)
+      toast.success(`${selectedCity.name} added to your itinerary! 🎉`)
+    } catch { toast.error('Failed to add city') }
   }
 
   const handleDeleteStop = async (stopId) => {
@@ -191,6 +229,14 @@ export default function ItineraryBuilderPage() {
     } catch { toast.error('Failed to generate share link') }
   }
 
+  const closeAddStop = () => {
+    setShowAddStop(false)
+    setCitySearch('')
+    setCities([])
+    setSelectedCity(null)
+    setStopForm({ arrivalDate: '', departureDate: '' })
+  }
+
   if (loading) return <div className="flex items-center justify-center h-64"><div className="w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full animate-spin" /></div>
 
   return (
@@ -199,7 +245,7 @@ export default function ItineraryBuilderPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{trip?.title}</h2>
-          <p className="text-sm text-gray-500">{stops.length} cities · drag to reorder</p>
+          <p className="text-sm text-gray-500">{stops.length} {stops.length === 1 ? 'city' : 'cities'} · drag to reorder</p>
         </div>
         <div className="flex gap-2">
           <Link to={`/app/trips/${id}/view`}>
@@ -214,7 +260,8 @@ export default function ItineraryBuilderPage() {
       {stops.length === 0 ? (
         <div className="card p-12 text-center">
           <div className="text-5xl mb-4">🗺️</div>
-          <p className="text-gray-500 dark:text-gray-400 mb-4">No cities added yet. Start building your itinerary!</p>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Start building your itinerary</h3>
+          <p className="text-gray-500 dark:text-gray-400 mb-4">Add cities to plan your perfect trip across India and beyond!</p>
           <Button onClick={() => setShowAddStop(true)}><Plus size={16} /> Add First City</Button>
         </div>
       ) : (
@@ -226,7 +273,7 @@ export default function ItineraryBuilderPage() {
                   key={stop.id}
                   stop={stop}
                   onDelete={handleDeleteStop}
-                  onAddActivity={(s) => { setSelectedStop(s); setStopForm({ ...stopForm, cityId: s.city.id }); setShowAddActivity(true) }}
+                  onAddActivity={(s) => { setSelectedStop(s); setSelectedCity(s.city); setShowAddActivity(true) }}
                   onRemoveActivity={handleRemoveActivity}
                 />
               ))}
@@ -235,33 +282,85 @@ export default function ItineraryBuilderPage() {
         </DndContext>
       )}
 
-      {/* Add Stop Modal */}
-      <Modal open={showAddStop} onClose={() => setShowAddStop(false)} title="Add City to Itinerary">
+      {/* ── Add City Modal (FIXED) ──────────────────────────────────────────── */}
+      <Modal open={showAddStop} onClose={closeAddStop} title="Add City to Itinerary">
         <div className="space-y-4">
-          <Input
-            label="Search City"
-            placeholder="e.g. Paris, Tokyo..."
-            value={citySearch}
-            onChange={(e) => setCitySearch(e.target.value)}
-          />
-          {cities.length > 0 && (
-            <Select label="Select City" value={stopForm.cityId}
-              onChange={(e) => setStopForm({ ...stopForm, cityId: e.target.value })}>
-              <option value="">-- Choose a city --</option>
-              {cities.map((c) => (
-                <option key={c.id} value={c.id}>{c.name}, {c.country}</option>
-              ))}
-            </Select>
+          {/* Search input */}
+          <div className="relative">
+            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              className="input pl-9 pr-4"
+              placeholder="Search Indian cities — e.g. Mumbai, Goa, Jaipur..."
+              value={citySearch}
+              onChange={(e) => { setCitySearch(e.target.value); setSelectedCity(null) }}
+              autoFocus
+            />
+          </div>
+
+          {/* Loading indicator */}
+          {searching && (
+            <div className="flex items-center justify-center py-4">
+              <div className="w-5 h-5 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" />
+              <span className="ml-2 text-sm text-gray-400">Searching cities...</span>
+            </div>
           )}
+
+          {/* City cards */}
+          {!searching && cities.length > 0 && (
+            <div className="space-y-2 max-h-52 overflow-y-auto pr-1">
+              <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">{cities.length} cities found — click to select</p>
+              {cities.map((c) => (
+                <CitySearchCard
+                  key={c.id}
+                  city={c}
+                  selected={selectedCity}
+                  onSelect={(city) => { setSelectedCity(city); setCities([]); setCitySearch(city.name) }}
+                />
+              ))}
+            </div>
+          )}
+
+          {/* No results */}
+          {!searching && citySearch.trim() && cities.length === 0 && !selectedCity && (
+            <div className="text-center py-4">
+              <p className="text-sm text-gray-400">No cities found for "{citySearch}"</p>
+              <p className="text-xs text-gray-300 mt-1">Try: Mumbai, Delhi, Goa, Jaipur, Shimla, Manali…</p>
+            </div>
+          )}
+
+          {/* Selected city confirmation */}
+          {selectedCity && (
+            <div className="flex items-center gap-3 px-4 py-3 bg-orange-50 dark:bg-orange-900/20 border-2 border-orange-300 dark:border-orange-700 rounded-xl">
+              <span className="text-2xl">🇮🇳</span>
+              <div className="flex-1">
+                <p className="font-semibold text-orange-800 dark:text-orange-300">{selectedCity.name}</p>
+                <p className="text-xs text-orange-600 dark:text-orange-400">{selectedCity.country}</p>
+              </div>
+              <CheckCircle2 size={20} className="text-orange-500" />
+              <button
+                type="button"
+                onClick={() => { setSelectedCity(null); setCitySearch(''); setCities([]) }}
+                className="text-orange-400 hover:text-orange-600 transition-colors"
+              >
+                <X size={16} />
+              </button>
+            </div>
+          )}
+
+          {/* Date inputs */}
           <div className="grid grid-cols-2 gap-3">
             <Input label="Arrival Date" type="date" value={stopForm.arrivalDate}
               onChange={(e) => setStopForm({ ...stopForm, arrivalDate: e.target.value })} />
             <Input label="Departure Date" type="date" value={stopForm.departureDate}
               onChange={(e) => setStopForm({ ...stopForm, departureDate: e.target.value })} />
           </div>
+
           <div className="flex gap-3 pt-2">
-            <Button variant="secondary" onClick={() => setShowAddStop(false)} className="flex-1">Cancel</Button>
-            <Button onClick={handleAddStop} className="flex-1">Add City</Button>
+            <Button variant="secondary" onClick={closeAddStop} className="flex-1">Cancel</Button>
+            <Button onClick={handleAddStop} className="flex-1" disabled={!selectedCity}>
+              {selectedCity ? `Add ${selectedCity.name}` : 'Select a City First'}
+            </Button>
           </div>
         </div>
       </Modal>
@@ -273,10 +372,12 @@ export default function ItineraryBuilderPage() {
             onChange={(e) => setActivityForm({ ...activityForm, activityId: e.target.value })}>
             <option value="">-- Select activity --</option>
             {activities.map((a) => (
-              <option key={a.id} value={a.id}>{a.title} {a.estimatedCost ? `($${a.estimatedCost})` : ''}</option>
+              <option key={a.id} value={a.id}>
+                {a.title} {a.estimatedCost ? `(₹${a.estimatedCost.toLocaleString('en-IN')})` : ''}
+              </option>
             ))}
           </Select>
-          {activities.length === 0 && <p className="text-sm text-gray-400">No activities found for this city. Add some from the admin panel.</p>}
+          {activities.length === 0 && <p className="text-sm text-gray-400">No activities found for this city. Activities will show here once added.</p>}
           <Input label="Scheduled Time (optional)" type="time" value={activityForm.scheduledTime}
             onChange={(e) => setActivityForm({ ...activityForm, scheduledTime: e.target.value })} />
           <div className="flex gap-3 pt-2">

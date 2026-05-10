@@ -6,7 +6,7 @@ import { statusColor } from '../../utils/formatters'
 import Badge from '../../components/ui/Badge'
 import Button from '../../components/ui/Button'
 import { CardSkeleton } from '../../components/ui/LoadingSkeleton'
-import { PlusCircle, Map, Pencil, Trash2, Eye, Wallet, Package, NotebookPen } from 'lucide-react'
+import { PlusCircle, Map, Pencil, Trash2, Eye, Wallet, Package, NotebookPen, CalendarDays } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 export default function MyTripsPage() {
@@ -34,6 +34,12 @@ export default function MyTripsPage() {
 
   const filters = ['ALL', 'PLANNED', 'ACTIVE', 'COMPLETED']
   const filtered = filter === 'ALL' ? trips : trips.filter((t) => t.status === filter)
+
+  const daysUntil = (dateStr) => {
+    if (!dateStr) return null
+    const diff = Math.ceil((new Date(dateStr) - new Date()) / (1000 * 60 * 60 * 24))
+    return diff > 0 ? diff : null
+  }
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
@@ -84,11 +90,16 @@ export default function MyTripsPage() {
           {filtered.map((trip) => (
             <div key={trip.id} className="card overflow-hidden hover:shadow-md transition-all duration-200 flex flex-col">
               {/* Cover */}
-              <div className="h-36 bg-gradient-to-br from-primary-400 via-primary-500 to-teal-500 relative flex items-center justify-center">
+              <div className="h-36 bg-gradient-to-br from-saffron-400 via-primary-500 to-teal-500 relative flex items-center justify-center">
                 <span className="text-4xl">{trip.coverImage ?? '✈️'}</span>
                 <Badge className={`absolute top-3 right-3 ${statusColor(trip.status)}`}>
                   {trip.status}
                 </Badge>
+                {daysUntil(trip.startDate) && (
+                  <div className="absolute bottom-2 left-2 flex items-center gap-1 bg-black/30 backdrop-blur-sm text-white text-xs font-bold px-2 py-1 rounded-lg">
+                    <CalendarDays size={11} /> {daysUntil(trip.startDate)}d to go
+                  </div>
+                )}
               </div>
 
               {/* Content */}

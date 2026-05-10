@@ -9,7 +9,6 @@ import Badge from '../../components/ui/Badge'
 import { Map, Wallet, CheckCircle, PlusCircle, ArrowRight, Globe, CalendarDays, TrendingUp } from 'lucide-react'
 import toast from 'react-hot-toast'
 
-// Indian popular destinations with rich metadata
 const indianDestinations = [
   { name: 'Mumbai',    state: 'Maharashtra',      emoji: '🌆', tag: 'City of Dreams',      color: 'from-purple-500 to-pink-500' },
   { name: 'Jaipur',    state: 'Rajasthan',         emoji: '🏰', tag: 'Pink City',            color: 'from-orange-500 to-red-500' },
@@ -23,7 +22,6 @@ const indianDestinations = [
   { name: 'Rishikesh', state: 'Uttarakhand',       emoji: '🧘', tag: 'Yoga Capital',         color: 'from-emerald-500 to-green-500' },
 ]
 
-// Quick-access travel tips
 const travelTips = [
   { emoji: '🌧️', tip: 'Best season: Oct–Feb for most of India. Jun–Sep for Himalayas trekking.' },
   { emoji: '🚂', tip: 'Book train tickets 60–90 days in advance on IRCTC for popular routes.' },
@@ -43,7 +41,6 @@ export default function DashboardPage() {
       .finally(() => setLoading(false))
   }, [])
 
-  // Days until next trip
   const upcomingTrip = data?.recentTrips?.find(
     (t) => t.status === 'PLANNED' && t.startDate && new Date(t.startDate) > new Date()
   )
@@ -61,7 +58,6 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8 max-w-6xl mx-auto">
 
-      {/* ── Welcome banner ─────────────────────────────────────────────── */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-orange-500 via-primary-600 to-teal-600 p-6 sm:p-8">
         <div className="absolute -top-8 -right-8 w-48 h-48 bg-white/5 rounded-full blur-2xl" />
         <div className="absolute -bottom-8 -left-8 w-48 h-48 bg-orange-400/10 rounded-full blur-2xl" />
@@ -83,7 +79,6 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* ── Stats ──────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {loading
           ? Array(4).fill(0).map((_, i) => <StatSkeleton key={i} />)
@@ -98,10 +93,8 @@ export default function DashboardPage() {
             ))}
       </div>
 
-      {/* ── Main grid ─────────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
 
-        {/* Recent trips — takes 2 cols */}
         <div className="xl:col-span-2 space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-bold text-gray-900 dark:text-white">Recent Trips</h3>
@@ -152,9 +145,7 @@ export default function DashboardPage() {
           )}
         </div>
 
-        {/* Sidebar: Quick actions + Travel tips */}
         <div className="space-y-4">
-          {/* Quick actions */}
           <div className="card p-5">
             <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
               <TrendingUp size={16} className="text-primary-500" /> Quick Actions
@@ -171,7 +162,6 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Travel tips */}
           <div className="card p-5">
             <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-3">🇮🇳 India Travel Tips</h3>
             <div className="space-y-3">
@@ -186,7 +176,6 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* ── Popular Indian Destinations ────────────────────────────────── */}
       <div>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-bold text-gray-900 dark:text-white">🇮🇳 Popular Indian Destinations</h3>

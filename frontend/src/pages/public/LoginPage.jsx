@@ -36,7 +36,6 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 via-white to-teal-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 p-4">
       <div className="w-full max-w-md">
-        {/* Logo */}
         <Link to="/" className="flex items-center justify-center gap-2 mb-8">
           <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-teal-500 rounded-xl flex items-center justify-center">
             <Globe size={20} className="text-white" />
@@ -89,7 +88,6 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* Demo hint */}
         <p className="text-center text-xs text-gray-400 mt-4">
           Demo: demo@traveloop.com / password123
         </p>

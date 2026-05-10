@@ -105,16 +105,14 @@ public class TripStopService {
         PopularPlace place = popularPlaceRepository.findById(placeId)
                 .orElseThrow(() -> new ResourceNotFoundException("PopularPlace", placeId));
 
-        // Create an activity from the popular place if it doesn't exist
-        // Note: For simplicity, creating a new activity for the city based on the place
         Activity activity = Activity.builder()
                 .city(stop.getCity())
                 .title(place.getPlaceName())
                 .description(place.getDescription())
                 .category(place.getCategory())
-                .estimatedCost((double) 0) // Default cost
-                .durationHours(2.0) // Default duration
-                .rating(4.5) // Default rating
+                .estimatedCost((double) 0)
+                .durationHours(2.0)
+                .rating(4.5)
                 .imageUrl(place.getImageUrl())
                 .build();
         activity = activityRepository.save(activity);

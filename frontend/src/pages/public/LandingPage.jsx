@@ -43,7 +43,6 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950 overflow-x-hidden">
-      {/* Navbar */}
       <nav className="sticky top-0 z-40 bg-white/80 dark:bg-gray-950/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -63,20 +62,15 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      {/* ── Hero ──────────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden">
-        {/* Gradient background */}
         <div className="absolute inset-0 bg-gradient-to-br from-orange-600 via-primary-700 to-teal-700" />
-        {/* Decorative circles */}
         <div className="absolute -top-24 -right-24 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
         <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-orange-400/10 rounded-full blur-3xl" />
-        {/* Pattern overlay */}
         <div className="absolute inset-0 opacity-10"
           style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")" }}
         />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-24 lg:py-36 text-center">
-          {/* Pill badge */}
           <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-5 py-2 text-white text-sm font-medium mb-8 border border-white/20">
             <span className="text-base">🇮🇳</span>
             <span>India's smartest travel planner — free forever</span>
@@ -101,7 +95,6 @@ export default function LandingPage() {
             </Link>
           </div>
 
-          {/* Stats bar */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto">
             {stats.map((s) => (
               <div key={s.label} className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/10 text-center">
@@ -114,7 +107,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── Indian Destinations ──────────────────────────────────────────── */}
       <section className="py-20 bg-gray-50 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-12">
@@ -143,7 +135,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── Features ─────────────────────────────────────────────────────── */}
       <section className="py-20 bg-white dark:bg-gray-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-14">
@@ -164,7 +155,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── How it works ─────────────────────────────────────────────────── */}
       <section className="py-20 bg-gradient-to-br from-gray-50 to-primary-50 dark:from-gray-900 dark:to-gray-800">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-14">
@@ -190,7 +180,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── Testimonials ─────────────────────────────────────────────────── */}
       <section className="py-20 bg-white dark:bg-gray-950">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white text-center mb-12">Loved by Indian travelers</h2>
@@ -216,7 +205,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── CTA ──────────────────────────────────────────────────────────── */}
       <section className="py-20 bg-gradient-to-r from-orange-500 via-primary-600 to-teal-600 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10"
           style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")" }}
@@ -239,7 +227,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="py-10 bg-gray-950 text-center">
         <div className="flex items-center justify-center gap-2 mb-3">
           <div className="w-7 h-7 bg-gradient-to-br from-orange-500 to-primary-600 rounded-lg flex items-center justify-center">

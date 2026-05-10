@@ -48,7 +48,6 @@ function SortableStop({ stop, onDelete, onAddActivity, onRemoveActivity }) {
         </div>
       </div>
 
-      {/* Activities */}
       {stop.activities?.length > 0 && (
         <div className="p-3 space-y-2">
           {stop.activities.map((sa) => (
@@ -77,7 +76,6 @@ function SortableStop({ stop, onDelete, onAddActivity, onRemoveActivity }) {
   )
 }
 
-// ── City Search Card ─────────────────────────────────────────────────────────
 function CitySearchCard({ city, selected, onSelect }) {
   const isSelected = selected?.id === city.id
   return (
@@ -135,7 +133,6 @@ export default function ItineraryBuilderPage() {
     }
   }, [stops, activeCityForRecommendations])
 
-  // Debounced city search
   useEffect(() => {
     if (!citySearch.trim()) { setCities([]); return }
     const t = setTimeout(async () => {
@@ -149,7 +146,6 @@ export default function ItineraryBuilderPage() {
     return () => clearTimeout(t)
   }, [citySearch])
 
-  // Load activities when a city is selected
   useEffect(() => {
     if (!selectedCity?.id) { setActivities([]); return }
     getCityActivities(selectedCity.id).then((r) => setActivities(r.data)).catch(() => {})
@@ -222,7 +218,6 @@ export default function ItineraryBuilderPage() {
   }
 
   const handleAddPopularPlace = async (place, stopIdToUse) => {
-    // If we know the exact stop, we use it. Otherwise, use the stop that matches the city
     let stop = stops.find(s => s.id === stopIdToUse) || stops.find(s => s.city?.name === place.cityName)
     if (!stop) {
       toast.error(`Please add ${place.cityName} to your itinerary first.`)
@@ -269,7 +264,6 @@ export default function ItineraryBuilderPage() {
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{trip?.title}</h2>
@@ -285,7 +279,6 @@ export default function ItineraryBuilderPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Drag-and-drop stops */}
         {stops.length === 0 ? (
           <div className="card p-12 text-center lg:col-span-2">
             <div className="text-5xl mb-4">🗺️</div>
@@ -313,7 +306,6 @@ export default function ItineraryBuilderPage() {
           </div>
         )}
 
-        {/* Right Sidebar for Recommendations */}
         <div className="lg:col-span-1 space-y-4">
           {activeCityForRecommendations ? (
             <PopularPlacesWidget 
@@ -328,10 +320,8 @@ export default function ItineraryBuilderPage() {
         </div>
       </div>
 
-      {/* ── Add City Modal (FIXED) ──────────────────────────────────────────── */}
       <Modal open={showAddStop} onClose={closeAddStop} title="Add City to Itinerary">
         <div className="space-y-4">
-          {/* Search input */}
           <div className="relative">
             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
@@ -344,7 +334,6 @@ export default function ItineraryBuilderPage() {
             />
           </div>
 
-          {/* Loading indicator */}
           {searching && (
             <div className="flex items-center justify-center py-4">
               <div className="w-5 h-5 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" />
@@ -352,7 +341,6 @@ export default function ItineraryBuilderPage() {
             </div>
           )}
 
-          {/* City cards */}
           {!searching && cities.length > 0 && (
             <div className="space-y-2 max-h-52 overflow-y-auto pr-1">
               <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">{cities.length} cities found — click to select</p>
@@ -367,7 +355,6 @@ export default function ItineraryBuilderPage() {
             </div>
           )}
 
-          {/* No results */}
           {!searching && citySearch.trim() && cities.length === 0 && !selectedCity && (
             <div className="text-center py-4">
               <p className="text-sm text-gray-400">No cities found for "{citySearch}"</p>
@@ -375,7 +362,6 @@ export default function ItineraryBuilderPage() {
             </div>
           )}
 
-          {/* Selected city confirmation */}
           {selectedCity && (
             <div className="flex items-center gap-3 px-4 py-3 bg-orange-50 dark:bg-orange-900/20 border-2 border-orange-300 dark:border-orange-700 rounded-xl">
               <span className="text-2xl">🇮🇳</span>
@@ -394,7 +380,6 @@ export default function ItineraryBuilderPage() {
             </div>
           )}
 
-          {/* Date inputs */}
           <div className="grid grid-cols-2 gap-3">
             <Input label="Arrival Date" type="date" value={stopForm.arrivalDate}
               onChange={(e) => setStopForm({ ...stopForm, arrivalDate: e.target.value })} />
@@ -411,7 +396,6 @@ export default function ItineraryBuilderPage() {
         </div>
       </Modal>
 
-      {/* Add Activity Modal */}
       <Modal open={showAddActivity} onClose={() => setShowAddActivity(false)} title={`Add Activity — ${selectedStop?.city?.name}`}>
         <div className="space-y-4">
           <Select label="Activity" value={activityForm.activityId}

@@ -33,7 +33,6 @@ export default function PopularPlacesWidget({ cityName, onAddActivity }) {
         </h3>
       </div>
 
-      {/* Categories */}
       <div className="flex overflow-x-auto gap-2 pb-2 mb-4 scrollbar-hide">
         {CATEGORIES.map(cat => (
           <button
@@ -50,7 +49,6 @@ export default function PopularPlacesWidget({ cityName, onAddActivity }) {
         ))}
       </div>
 
-      {/* Places List */}
       <div className="space-y-3">
         {loading ? (
           <div className="animate-pulse space-y-3">

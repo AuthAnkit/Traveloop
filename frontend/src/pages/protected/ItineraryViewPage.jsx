@@ -37,7 +37,6 @@ export default function ItineraryViewPage() {
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
-      {/* Hero card */}
       <div className="card overflow-hidden">
         <div className="h-48 bg-gradient-to-br from-primary-500 via-primary-600 to-teal-600 flex flex-col items-center justify-center relative">
           <span className="text-6xl mb-2">{trip.coverImage ?? '✈️'}</span>
@@ -72,11 +71,9 @@ export default function ItineraryViewPage() {
         )}
       </div>
 
-      {/* Stops timeline */}
       <div className="space-y-4">
         {(trip.stops ?? []).map((stop, idx) => (
           <div key={stop.id} className="flex gap-4">
-            {/* Timeline line */}
             <div className="flex flex-col items-center">
               <div className="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900/40 flex items-center justify-center text-primary-600 dark:text-primary-400 font-bold text-sm flex-shrink-0">
                 {idx + 1}
@@ -88,7 +85,6 @@ export default function ItineraryViewPage() {
 
             <div className="flex-1 pb-4">
               <div className="card overflow-hidden">
-                {/* City header */}
                 <div className="px-4 py-3 bg-gray-50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-800">
                   <div className="flex items-center gap-2">
                     <MapPin size={16} className="text-primary-500" />
@@ -100,7 +96,6 @@ export default function ItineraryViewPage() {
                   </p>
                 </div>
 
-                {/* Activities */}
                 {stop.activities?.length > 0 ? (
                   <div className="divide-y divide-gray-100 dark:divide-gray-800">
                     {stop.activities.map((sa) => (

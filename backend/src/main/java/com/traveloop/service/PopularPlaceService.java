@@ -26,8 +26,6 @@ public class PopularPlaceService {
     }
     
     public List<PopularPlaceResponse> getRecommendedPlaces(String cityName) {
-        // Here we could implement more complex logic (e.g. based on user preferences)
-        // For now, returning top places in the city (all of them or limit to top 10)
         return popularPlaceRepository.findByCityNameIgnoreCase(cityName)
                 .stream().limit(10).map(this::mapToResponse).collect(Collectors.toList());
     }

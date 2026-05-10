@@ -22,7 +22,6 @@ export default function Sidebar({ open, onClose }) {
 
   return (
     <>
-      {/* Mobile overlay */}
       {open && (
         <div className="fixed inset-0 z-20 bg-black/40 lg:hidden" onClick={onClose} />
       )}
@@ -32,7 +31,6 @@ export default function Sidebar({ open, onClose }) {
         'border-r border-gray-100 dark:border-gray-800 transition-transform duration-300',
         open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
       )}>
-        {/* Logo */}
         <div className="flex items-center justify-between px-5 py-5 border-b border-gray-100 dark:border-gray-800">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-teal-500 rounded-lg flex items-center justify-center">
@@ -45,7 +43,6 @@ export default function Sidebar({ open, onClose }) {
           </button>
         </div>
 
-        {/* User avatar */}
         <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-800">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary-400 to-teal-400 flex items-center justify-center text-white font-bold text-sm">
@@ -58,7 +55,6 @@ export default function Sidebar({ open, onClose }) {
           </div>
         </div>
 
-        {/* Nav links */}
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
           {links.map(({ to, icon: Icon, label }) => (
             <NavLink
@@ -74,7 +70,6 @@ export default function Sidebar({ open, onClose }) {
           ))}
         </nav>
 
-        {/* Bottom actions */}
         <div className="px-3 py-4 border-t border-gray-100 dark:border-gray-800 space-y-1">
           <NavLink to="/app/profile" className={({ isActive }) => clsx('sidebar-link', isActive && 'active')} onClick={onClose}>
             <User size={18} /><span>Profile</span>

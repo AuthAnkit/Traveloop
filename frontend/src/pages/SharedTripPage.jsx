@@ -47,7 +47,6 @@ export default function SharedTripPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-      {/* Navbar */}
       <nav className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-800 sticky top-0 z-10">
         <div className="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
@@ -66,7 +65,6 @@ export default function SharedTripPage() {
       </nav>
 
       <div className="max-w-3xl mx-auto px-4 py-8 space-y-6">
-        {/* Hero */}
         <div className="card overflow-hidden">
           <div className="h-48 bg-gradient-to-br from-primary-500 via-primary-600 to-teal-600 flex flex-col items-center justify-center">
             <span className="text-6xl mb-2">{trip?.coverImage ?? '✈️'}</span>
@@ -89,7 +87,6 @@ export default function SharedTripPage() {
           {trip?.description && <p className="px-5 pb-5 text-sm text-gray-500 dark:text-gray-400">{trip.description}</p>}
         </div>
 
-        {/* Stops */}
         {trip?.stops?.map((stop, idx) => (
           <div key={stop.id} className="flex gap-4">
             <div className="flex flex-col items-center">
@@ -134,7 +131,6 @@ export default function SharedTripPage() {
           </div>
         ))}
 
-        {/* CTA */}
         <div className="card p-6 text-center bg-gradient-to-r from-primary-50 to-teal-50 dark:from-primary-900/20 dark:to-teal-900/20">
           <h3 className="font-bold text-gray-900 dark:text-white mb-2">Inspired? Plan your own trip!</h3>
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">Create your free Traveloop account and start building your adventure.</p>

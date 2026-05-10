@@ -46,7 +46,6 @@ export default function ProfilePage() {
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
-      {/* Profile card */}
       <div className="card p-6">
         <div className="flex items-center gap-5 mb-6">
           <div className="relative">
@@ -97,7 +96,6 @@ export default function ProfilePage() {
         )}
       </div>
 
-      {/* Stats */}
       <div className="grid grid-cols-3 gap-4">
         {[
           { label: 'Total Trips', value: profile?.totalTrips ?? 0 },
@@ -111,7 +109,6 @@ export default function ProfilePage() {
         ))}
       </div>
 
-      {/* Account info */}
       <div className="card p-6">
         <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Account Information</h3>
         <div className="space-y-3">

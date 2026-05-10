@@ -67,7 +67,6 @@ export default function BudgetPage() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      {/* Header */}
       <div className="flex items-center gap-3">
         <Link to={`/app/trips/${id}/view`} className="text-gray-400 hover:text-gray-600"><ArrowLeft size={20} /></Link>
         <div>
@@ -76,7 +75,6 @@ export default function BudgetPage() {
         </div>
       </div>
 
-      {/* Summary cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[
         { label: 'Total Budget',     value: formatCurrency(totalCost),                icon: Wallet,      color: 'text-primary-600 dark:text-primary-400', bg: 'bg-primary-50 dark:bg-primary-900/30' },
@@ -96,7 +94,6 @@ export default function BudgetPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Input form */}
         <div className="card p-6 space-y-4">
           <h3 className="font-semibold text-gray-900 dark:text-white flex items-center justify-between">
             Edit Budget
@@ -131,7 +128,6 @@ export default function BudgetPage() {
           </div>
         </div>
 
-        {/* Charts */}
         <div className="card p-6 space-y-6">
           <h3 className="font-semibold text-gray-900 dark:text-white">Breakdown</h3>
           {chartData.length === 0 ? (

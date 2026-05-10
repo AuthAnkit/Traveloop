@@ -88,7 +88,6 @@ export default function PackingPage() {
         </Button>
       </div>
 
-      {/* Progress bar */}
       <div className="card p-4">
         <div className="flex justify-between text-sm mb-2">
           <span className="text-gray-600 dark:text-gray-400">{packed} of {items.length} packed</span>
@@ -102,7 +101,6 @@ export default function PackingPage() {
         </div>
       </div>
 
-      {/* Add item */}
       <form onSubmit={handleAdd} className="card p-4 flex gap-3">
         <Input
           placeholder="Add item (e.g. Passport)"
@@ -116,7 +114,6 @@ export default function PackingPage() {
         <Button type="submit" loading={adding}><Plus size={16} /></Button>
       </form>
 
-      {/* Category filter */}
       <div className="flex gap-2 flex-wrap">
         {['ALL', ...CATEGORIES].map((cat) => (
           <button key={cat} onClick={() => setActiveCategory(cat)}

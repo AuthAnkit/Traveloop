@@ -80,7 +80,6 @@ export default function CreateTripPage() {
             <option value="PUBLIC">🌍 Public</option>
           </Select>
 
-          {/* Cover emoji picker */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Cover Image</label>
             <div className="flex flex-wrap gap-2">

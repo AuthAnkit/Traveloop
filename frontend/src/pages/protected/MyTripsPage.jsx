@@ -53,7 +53,6 @@ export default function MyTripsPage() {
         </Link>
       </div>
 
-      {/* Filter tabs */}
       <div className="flex gap-2 flex-wrap">
         {filters.map((f) => (
           <button
@@ -89,7 +88,6 @@ export default function MyTripsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filtered.map((trip) => (
             <div key={trip.id} className="card overflow-hidden hover:shadow-md transition-all duration-200 flex flex-col">
-              {/* Cover */}
               <div className="h-36 bg-gradient-to-br from-saffron-400 via-primary-500 to-teal-500 relative flex items-center justify-center">
                 <span className="text-4xl">{trip.coverImage ?? '✈️'}</span>
                 <Badge className={`absolute top-3 right-3 ${statusColor(trip.status)}`}>
@@ -102,7 +100,6 @@ export default function MyTripsPage() {
                 )}
               </div>
 
-              {/* Content */}
               <div className="p-4 flex-1 flex flex-col">
                 <h3 className="font-bold text-gray-900 dark:text-white truncate mb-1">{trip.title}</h3>
                 <p className="text-xs text-gray-400 mb-2">
@@ -112,7 +109,6 @@ export default function MyTripsPage() {
                   <Map size={12} /> {trip.stopCount} {trip.stopCount === 1 ? 'city' : 'cities'}
                 </p>
 
-                {/* Quick links */}
                 <div className="flex gap-2 flex-wrap mb-4 mt-auto">
                   <Link to={`/app/trips/${trip.id}/builder`} className="flex items-center gap-1 text-xs bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 px-2.5 py-1 rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/50 transition-colors">
                     <Map size={11} /> Builder
@@ -128,7 +124,6 @@ export default function MyTripsPage() {
                   </Link>
                 </div>
 
-                {/* Actions */}
                 <div className="flex gap-2">
                   <Link to={`/app/trips/${trip.id}/view`} className="flex-1">
                     <Button variant="outline" size="sm" className="w-full">

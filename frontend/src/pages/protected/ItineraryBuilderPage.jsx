@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { getTrip } from '../../api/trips'
-import { addStop, updateStop, deleteStop, reorderStops, addActivity, removeActivity } from '../../api/trips'
+import { addStop, updateStop, deleteStop, reorderStops, addActivity, removeActivity, addActivityFromPlace } from '../../api/trips'
 import { getCities, getCityActivities } from '../../api/cities'
 import { shareTrip } from '../../api/shared'
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
@@ -15,6 +15,7 @@ import { formatDate } from '../../utils/dateUtils'
 import { activityCategoryColor, formatCurrency } from '../../utils/formatters'
 import toast from 'react-hot-toast'
 import { GripVertical, Plus, Trash2, MapPin, Clock, IndianRupee, Share2, Eye, X, Search, CheckCircle2 } from 'lucide-react'
+import PopularPlacesWidget from '../../components/itinerary/PopularPlacesWidget'
 
 function SortableStop({ stop, onDelete, onAddActivity, onRemoveActivity }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: stop.id })
@@ -122,10 +123,17 @@ export default function ItineraryBuilderPage() {
   const [stopForm, setStopForm] = useState({ arrivalDate: '', departureDate: '' })
   const [activityForm, setActivityForm] = useState({ activityId: '', scheduledTime: '' })
   const [searching, setSearching] = useState(false)
+  const [activeCityForRecommendations, setActiveCityName] = useState(null)
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }))
 
   useEffect(() => { loadTrip() }, [id])
+
+  useEffect(() => {
+    if (stops.length > 0 && !activeCityForRecommendations) {
+      setActiveCityName(stops[stops.length - 1].city?.name)
+    }
+  }, [stops, activeCityForRecommendations])
 
   // Debounced city search
   useEffect(() => {
@@ -182,6 +190,7 @@ export default function ItineraryBuilderPage() {
       setStopForm({ arrivalDate: '', departureDate: '' })
       setCitySearch('')
       setCities([])
+      setActiveCityName(selectedCity.name) // Show recommendations for new city
       setSelectedCity(null)
       toast.success(`${selectedCity.name} added to your itinerary! 🎉`)
     } catch { toast.error('Failed to add city') }
@@ -212,6 +221,25 @@ export default function ItineraryBuilderPage() {
     } catch { toast.error('Failed to add activity') }
   }
 
+  const handleAddPopularPlace = async (place, stopIdToUse) => {
+    // If we know the exact stop, we use it. Otherwise, use the stop that matches the city
+    let stop = stops.find(s => s.id === stopIdToUse) || stops.find(s => s.city?.name === place.cityName)
+    if (!stop) {
+      toast.error(`Please add ${place.cityName} to your itinerary first.`)
+      return
+    }
+    
+    try {
+      const { data } = await addActivityFromPlace(stop.id, place.id)
+      setStops(stops.map((s) =>
+        s.id === stop.id ? { ...s, activities: [...(s.activities ?? []), data] } : s
+      ))
+      toast.success(`${place.placeName} added to itinerary!`)
+    } catch {
+      toast.error('Failed to add popular place')
+    }
+  }
+
   const handleRemoveActivity = async (saId) => {
     try {
       await removeActivity(saId)
@@ -240,7 +268,7 @@ export default function ItineraryBuilderPage() {
   if (loading) return <div className="flex items-center justify-center h-64"><div className="w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full animate-spin" /></div>
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <div className="max-w-5xl mx-auto space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -256,31 +284,49 @@ export default function ItineraryBuilderPage() {
         </div>
       </div>
 
-      {/* Drag-and-drop stops */}
-      {stops.length === 0 ? (
-        <div className="card p-12 text-center">
-          <div className="text-5xl mb-4">🗺️</div>
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Start building your itinerary</h3>
-          <p className="text-gray-500 dark:text-gray-400 mb-4">Add cities to plan your perfect trip across India and beyond!</p>
-          <Button onClick={() => setShowAddStop(true)}><Plus size={16} /> Add First City</Button>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Drag-and-drop stops */}
+        {stops.length === 0 ? (
+          <div className="card p-12 text-center lg:col-span-2">
+            <div className="text-5xl mb-4">🗺️</div>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Start building your itinerary</h3>
+            <p className="text-gray-500 dark:text-gray-400 mb-4">Add cities to plan your perfect trip across India and beyond!</p>
+            <Button onClick={() => setShowAddStop(true)}><Plus size={16} /> Add First City</Button>
+          </div>
+        ) : (
+          <div className="lg:col-span-2">
+            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+              <SortableContext items={stops.map((s) => s.id)} strategy={verticalListSortingStrategy}>
+                <div className="space-y-3">
+                  {stops.map((stop) => (
+                    <SortableStop
+                      key={stop.id}
+                      stop={stop}
+                      onDelete={handleDeleteStop}
+                      onAddActivity={(s) => { setSelectedStop(s); setSelectedCity(s.city); setShowAddActivity(true) }}
+                      onRemoveActivity={handleRemoveActivity}
+                    />
+                  ))}
+                </div>
+              </SortableContext>
+            </DndContext>
+          </div>
+        )}
+
+        {/* Right Sidebar for Recommendations */}
+        <div className="lg:col-span-1 space-y-4">
+          {activeCityForRecommendations ? (
+            <PopularPlacesWidget 
+              cityName={activeCityForRecommendations} 
+              onAddActivity={(place) => handleAddPopularPlace(place)} 
+            />
+          ) : (
+             <div className="card p-5 text-center bg-saffron-50/50 dark:bg-saffron-900/10 border border-saffron-100 dark:border-saffron-900/20">
+                <p className="text-saffron-600 dark:text-saffron-400 text-sm">Select a city to see top attractions!</p>
+             </div>
+          )}
         </div>
-      ) : (
-        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-          <SortableContext items={stops.map((s) => s.id)} strategy={verticalListSortingStrategy}>
-            <div className="space-y-3">
-              {stops.map((stop) => (
-                <SortableStop
-                  key={stop.id}
-                  stop={stop}
-                  onDelete={handleDeleteStop}
-                  onAddActivity={(s) => { setSelectedStop(s); setSelectedCity(s.city); setShowAddActivity(true) }}
-                  onRemoveActivity={handleRemoveActivity}
-                />
-              ))}
-            </div>
-          </SortableContext>
-        </DndContext>
-      )}
+      </div>
 
       {/* ── Add City Modal (FIXED) ──────────────────────────────────────────── */}
       <Modal open={showAddStop} onClose={closeAddStop} title="Add City to Itinerary">

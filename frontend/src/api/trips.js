@@ -15,4 +15,5 @@ export const deleteStop = (stopId) => api.delete(`/stops/${stopId}`)
 export const reorderStops = (tripId, stopIds) => api.put(`/trips/${tripId}/stops/reorder`, { stopIds })
 
 export const addActivity = (stopId, data) => api.post(`/stops/${stopId}/activities`, data)
-export const removeActivity = (id) => api.delete(`/stop-activities/${id}`)
+export const addActivityFromPlace = (stopId, placeId) => api.post(`/stops/${stopId}/activities/from-place/${placeId}`)
+export const removeActivity = (activityId) => api.delete(`/stop-activities/${activityId}`)

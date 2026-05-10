@@ -7,6 +7,8 @@ import com.traveloop.dto.response.StopActivityResponse;
 import com.traveloop.dto.response.TripStopResponse;
 import com.traveloop.entity.*;
 import com.traveloop.exception.ResourceNotFoundException;
+import com.traveloop.repository.ActivityRepository;
+import com.traveloop.repository.PopularPlaceRepository;
 import com.traveloop.repository.StopActivityRepository;
 import com.traveloop.repository.TripStopRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,8 @@ public class TripStopService {
 
     private final TripStopRepository stopRepository;
     private final StopActivityRepository stopActivityRepository;
+    private final ActivityRepository activityRepository;
+    private final PopularPlaceRepository popularPlaceRepository;
     private final TripService tripService;
     private final CityService cityService;
     private final ActivityService activityService;
@@ -90,6 +94,39 @@ public class TripStopService {
                 .activity(activityService.mapToResponse(activity))
                 .scheduledTime(saved.getScheduledTime())
                 .notes(saved.getNotes())
+                .build();
+    }
+
+    @Transactional
+    public StopActivityResponse addActivityFromPopularPlace(Long stopId, Long placeId, String email) {
+        TripStop stop = getEntityById(stopId);
+        tripService.findAndVerifyOwner(stop.getTrip().getId(), email);
+        
+        PopularPlace place = popularPlaceRepository.findById(placeId)
+                .orElseThrow(() -> new ResourceNotFoundException("PopularPlace", placeId));
+
+        // Create an activity from the popular place if it doesn't exist
+        // Note: For simplicity, creating a new activity for the city based on the place
+        Activity activity = Activity.builder()
+                .city(stop.getCity())
+                .title(place.getPlaceName())
+                .description(place.getDescription())
+                .category(place.getCategory())
+                .estimatedCost((double) 0) // Default cost
+                .durationHours(2.0) // Default duration
+                .rating(4.5) // Default rating
+                .imageUrl(place.getImageUrl())
+                .build();
+        activity = activityRepository.save(activity);
+
+        StopActivity sa = StopActivity.builder()
+                .tripStop(stop)
+                .activity(activity)
+                .build();
+        StopActivity saved = stopActivityRepository.save(sa);
+        return StopActivityResponse.builder()
+                .id(saved.getId())
+                .activity(activityService.mapToResponse(activity))
                 .build();
     }
 

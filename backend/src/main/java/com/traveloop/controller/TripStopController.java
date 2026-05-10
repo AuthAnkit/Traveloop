@@ -5,6 +5,7 @@ import com.traveloop.dto.request.CreateTripStopRequest;
 import com.traveloop.dto.request.ReorderStopsRequest;
 import com.traveloop.dto.response.StopActivityResponse;
 import com.traveloop.dto.response.TripStopResponse;
+import com.traveloop.service.PopularPlaceService;
 import com.traveloop.service.TripStopService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,6 +25,7 @@ import java.util.List;
 public class TripStopController {
 
     private final TripStopService stopService;
+    private final PopularPlaceService popularPlaceService;
 
     @GetMapping("/api/trips/{tripId}/stops")
     @Operation(summary = "Get all stops for a trip")
@@ -81,5 +83,14 @@ public class TripStopController {
                                                 @AuthenticationPrincipal UserDetails user) {
         stopService.removeActivity(id, user.getUsername());
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/api/stops/{stopId}/activities/from-place/{placeId}")
+    @Operation(summary = "Add an activity from a popular place")
+    public ResponseEntity<StopActivityResponse> addActivityFromPlace(@PathVariable Long stopId,
+                                                                     @PathVariable Long placeId,
+                                                                     @AuthenticationPrincipal UserDetails user) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(stopService.addActivityFromPopularPlace(stopId, placeId, user.getUsername()));
     }
 }

@@ -61,8 +61,7 @@ INSERT INTO cities (name, country, country_code, latitude, longitude, cost_index
 ('Aurangabad',   'India', 'IN', 19.8762, 75.3433,  1600, NULL, 8.3),
 ('Bhopal',       'India', 'IN', 23.2599, 77.4126,  1800, NULL, 7.9),
 ('Ranthambore',  'India', 'IN', 26.0173, 76.5026,  2500, NULL, 8.8),
-('Jim Corbett',  'India', 'IN', 29.5300, 78.7747,  2500, NULL, 8.6)
-ON CONFLICT DO NOTHING;
+('Jim Corbett',  'India', 'IN', 29.5300, 78.7747,  2500, NULL, 8.6);
 
 -- ================================================================
 -- Activities for key cities
@@ -170,5 +169,3 @@ SELECT id, 'Sunrise at Tiger Hill', 'Breathtaking view of Kanchenjunga and somet
 UNION ALL SELECT id, 'Darjeeling Himalayan Railway (Toy Train)', 'UNESCO heritage toy train through tea gardens and colonial hill towns.', 'Sightseeing', 1070, 2.5, 4.8, NULL FROM cities WHERE name='Darjeeling' AND country='India'
 UNION ALL SELECT id, 'Tea Garden Tour & Tasting', 'Walk through Happy Valley tea estate and taste world-famous Darjeeling tea.', 'Culture', 200, 2.5, 4.7, NULL FROM cities WHERE name='Darjeeling' AND country='India'
 UNION ALL SELECT id, 'Himalayan Mountaineering Institute', 'Museum at the institute that trained Tenzing Norgay — Everest history.', 'Culture', 100, 2.0, 4.6, NULL FROM cities WHERE name='Darjeeling' AND country='India';
-
-ON CONFLICT DO NOTHING;

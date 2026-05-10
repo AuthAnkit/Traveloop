@@ -1,6 +1,6 @@
-# Traveloop — Full-Stack Travel Itinerary Platform
+# Traveloop — India-Focused Intelligent Travel Planner
 
-A production-grade, multi-user travel planning SaaS built with Spring Boot + React.
+A production-grade, multi-user travel planning SaaS built with Spring Boot + React, localized for the Indian market with intelligent destination recommendations.
 
 ---
 
@@ -57,6 +57,7 @@ traveloop/
 | `trip_notes`      | Journal entries per trip/stop        |
 | `shared_trips`    | Public share links with view tracking|
 | `analytics_events`| Platform usage tracking              |
+| `popular_places`  | Indian destination recommendations   |
 
 ---
 
@@ -107,6 +108,11 @@ GET    /api/shared/{slug}        ← public, no auth required
 GET    /api/cities?q=paris
 GET    /api/cities/popular
 GET    /api/cities/{id}/activities
+
+GET    /api/places/state/{state}
+GET    /api/places/city/{city}
+GET    /api/places/recommended/{city}
+POST   /api/stops/{stopId}/activities/from-place/{placeId}
 ```
 
 Swagger UI: `http://localhost:8080/swagger-ui.html`
@@ -165,9 +171,12 @@ npm run dev
 
 ## Key Features
 
+- **Intelligent Recommendations** — Context-aware popular place suggestions (e.g., Baga Beach for Goa)
+- **Automatic Database Seeding** — Auto-populates 50+ Indian cities and activities on startup
+- **Indian Localization** — Full ₹ INR currency formatting and Indian travel aesthetics
 - **JWT Auth** — Stateless authentication, token stored in localStorage
 - **Drag-and-Drop** — City reordering with @dnd-kit/sortable
-- **Real-time Budget** — Pie + bar charts update as you type (Recharts)
+- **Real-time Budget** — Pie + bar charts update as you type (Recharts) with Per-Person calculator
 - **Public Sharing** — UUID-based slug, view count tracking
 - **Dark Mode** — System-aware, persisted in localStorage
 - **Fully Responsive** — Mobile-first layout with collapsible sidebar
